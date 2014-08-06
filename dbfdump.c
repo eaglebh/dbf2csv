@@ -178,11 +178,10 @@ int main( int argc, char ** argv )
 	else
 	    panWidth[i] = nWidth;
 
-	if( eType == FTString )
-	    sprintf( szFormat, "%%-%ds ", panWidth[i] );
-	else
-	    sprintf( szFormat, "%%%ds ", panWidth[i] );
-	printf( szFormat, szTitle );
+	printf( "%s", szTitle );
+        if(i != DBFGetFieldCount(hDBF) - 1) {
+            printf( "," );
+        }
     }
     printf( "\n" );
 
@@ -213,32 +212,26 @@ int main( int argc, char ** argv )
             {
                 if( DBFIsAttributeNULL( hDBF, iRecord, i ) )
                 {
-                    if( eType == FTString )
-                        sprintf( szFormat, "%%-%ds", nWidth );
-                    else
-                        sprintf( szFormat, "%%%ds", nWidth );
-
-                    printf( szFormat, "(NULL)" );
+                    if(i == DBFGetFieldCount(hDBF) - 1) {
+                        printf( "," );
+                    }
                 }
                 else
                 {
                     switch( eType )
                     {
                       case FTString:
-                        sprintf( szFormat, "%%-%ds", nWidth );
-                        printf( szFormat, 
+                        printf( "%s", 
                                 DBFReadStringAttribute( hDBF, iRecord, i ) );
                         break;
                         
                       case FTInteger:
-                        sprintf( szFormat, "%%%dd", nWidth );
-                        printf( szFormat, 
+                        printf( "%d", 
                                 DBFReadIntegerAttribute( hDBF, iRecord, i ) );
                         break;
                         
                       case FTDouble:
-                        sprintf( szFormat, "%%%d.%dlf", nWidth, nDecimals );
-                        printf( szFormat, 
+                        printf( "%lf", 
                                 DBFReadDoubleAttribute( hDBF, iRecord, i ) );
                         break;
                         
@@ -253,8 +246,7 @@ int main( int argc, char ** argv )
 /* -------------------------------------------------------------------- */
             else
             {
-                sprintf( szFormat, "%%-%ds", nWidth );
-                printf( szFormat, 
+                printf( "%s", 
                         DBFReadStringAttribute( hDBF, iRecord, i ) );
             }
 
@@ -262,17 +254,17 @@ int main( int argc, char ** argv )
 /*      Write out any extra spaces required to pad out the field        */
 /*      width.                                                          */
 /* -------------------------------------------------------------------- */
-	    if( !bMultiLine )
-	    {
-		sprintf( szFormat, "%%%ds", panWidth[i] - nWidth + 1 );
-		printf( szFormat, "" );
-	    }
 
             if( bMultiLine )
                 printf( "\n" );
+            
+            if(i != DBFGetFieldCount(hDBF) - 1) {
+                printf( "," );
+            }
+
 
 	    fflush( stdout );
-	}
+	}	
 	printf( "\n" );
     }
 
